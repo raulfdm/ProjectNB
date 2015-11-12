@@ -348,17 +348,17 @@ public class ConsultaView extends javax.swing.JFrame {
         Connection con;
         PreparedStatement st;
 
-        String sql = "select * from colaborador where codigocolaborador = ?";
+        String sql = "select * from colaborador where funcao like %?%";
         String funcao = txtFuncaoConsulta.getText();
 
         
         try {
             con = DataBase.getConnection();
             st = con.prepareStatement(sql);
-            st.setInt(1, 1);
+            st.setString(1, funcao);
 
             // boolean resultado = st.execute();
-            ResultSet rt = st.executeQuery(sql);
+            ResultSet rt = st.executeQuery();
 
             while (rt.next()) {
                 int codigo = rt.getInt("codigofuncionario");

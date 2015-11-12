@@ -335,7 +335,7 @@ public class CadastroView extends javax.swing.JFrame {
     }
 
     public double formataSalario(String salario) {
-        salario = salario.replace("R$ ", "");
+        salario = salario.replace("R$ ", "").replace(",", ".");
         double salarioConvertido = Double.parseDouble(salario);
 
         return salarioConvertido;
