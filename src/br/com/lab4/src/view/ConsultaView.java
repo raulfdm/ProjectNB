@@ -5,7 +5,6 @@
  */
 package br.com.lab4.src.view;
 
-import br.com.lab4.utils.CellRenderer;
 import br.com.lab4.src.jdbc.DataBase;
 import br.com.lab4.utils.JNumberFormatField;
 import java.sql.Connection;
@@ -17,7 +16,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -152,6 +150,17 @@ public class ConsultaView extends javax.swing.JFrame {
                 txtSalIniConsulta.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         txtSalIniConsultaActionPerformed(evt);
+                    }
+                });
+                txtSalIniConsulta.addKeyListener(new java.awt.event.KeyAdapter() {
+                    public void keyPressed(java.awt.event.KeyEvent evt) {
+                        txtSalIniConsultaKeyPressed(evt);
+                    }
+                });
+
+                txtSalFimConsulta.addKeyListener(new java.awt.event.KeyAdapter() {
+                    public void keyPressed(java.awt.event.KeyEvent evt) {
+                        txtSalFimConsultaKeyPressed(evt);
                     }
                 });
 
@@ -301,6 +310,21 @@ public class ConsultaView extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void txtSalIniConsultaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSalIniConsultaKeyPressed
+       int key = evt.getKeyCode();
+        if (key == KeyEvent.VK_ENTER) {
+          pesquisarFuncionario();
+        }
+    
+    }//GEN-LAST:event_txtSalIniConsultaKeyPressed
+
+    private void txtSalFimConsultaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSalFimConsultaKeyPressed
+        int key = evt.getKeyCode();
+        if (key == KeyEvent.VK_ENTER) {
+          pesquisarFuncionario();
+        }
+    }//GEN-LAST:event_txtSalFimConsultaKeyPressed
 
     /**
      * @param args the command line arguments
