@@ -21,6 +21,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import br.com.lab4.utils.CellRenderer;
 import java.awt.event.KeyEvent;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -73,7 +74,7 @@ public class ConsultaView extends javax.swing.JFrame {
                     setLimit(7); 
                 } }
                 ;
-                jButton1 = new javax.swing.JButton();
+                btnExcluir = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -164,10 +165,10 @@ public class ConsultaView extends javax.swing.JFrame {
                     }
                 });
 
-                jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/lab4/img/garbage.png"))); // NOI18N
-                jButton1.addActionListener(new java.awt.event.ActionListener() {
+                btnExcluir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/lab4/img/garbage.png"))); // NOI18N
+                btnExcluir.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        jButton1ActionPerformed(evt);
+                        btnExcluirActionPerformed(evt);
                     }
                 });
 
@@ -183,7 +184,7 @@ public class ConsultaView extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(btnPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(10, 10, 10)
                                 .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
@@ -232,7 +233,7 @@ public class ConsultaView extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnVoltar)
-                            .addComponent(jButton1)
+                            .addComponent(btnExcluir)
                             .addComponent(btnPesquisar))
                         .addContainerGap())
                 );
@@ -307,9 +308,18 @@ public class ConsultaView extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_cbnOperadorLogicoActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+      
+        int resposta = JOptionPane.showConfirmDialog(null, "Deseja excluir o funcionário?", "Confirmação", JOptionPane.YES_NO_OPTION);
+        if (resposta == JOptionPane.YES_OPTION) {
+            try {
+                removerFuncionario();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(null, ex.getMessage());
+            
+            }
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void txtSalIniConsultaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSalIniConsultaKeyPressed
        int key = evt.getKeyCode();
@@ -363,11 +373,11 @@ public class ConsultaView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnExcluir;
     private javax.swing.ButtonGroup btnGNomeCodigo;
     private javax.swing.JButton btnPesquisar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox cbnOperadorLogico;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblFuncaoConsulta;
     private javax.swing.JLabel lblSalarioConsulta;
     private javax.swing.JLabel lblTituloTela;
@@ -522,6 +532,32 @@ public class ConsultaView extends javax.swing.JFrame {
     private void ativaFuncao() {
         txtFuncaoConsulta.setEditable(true);
         txtFuncaoConsulta.setEnabled(true);
+    }
+
+    private void removerFuncionario() throws Exception{
+        DefaultTableModel m = (DefaultTableModel) tabPesquisa.getModel();
+        Connection con;
+        Statement st;
+      
+
+        int i = (int) m.getValueAt(tabPesquisa.getSelectedRow(),0);
+        
+        String sql = "delete from colaborador where CODIGOFUNCIONARIO = "+i;
+
+        
+        try {
+            con = DataBase.getConnection();
+            st = con.createStatement();
+            st.execute(sql);
+
+            tabPesquisa.setModel(m);
+            
+            pesquisarFuncionario();
+            st.close();
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(CadastroView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }
