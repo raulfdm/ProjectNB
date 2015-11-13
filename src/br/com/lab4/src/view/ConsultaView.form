@@ -223,6 +223,7 @@
     <Component class="javax.swing.JTextField" name="txtSalIniConsulta">
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtSalIniConsultaActionPerformed"/>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSalIniConsultaKeyPressed"/>
       </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JNumberFormatField(new DecimalFormat(&quot;R$ 0.00&quot;)) { &#xd;&#xa;                {// limita a 4 &#xd;&#xa;                    // caracteres &#xd;&#xa;                    setLimit(7); &#xd;&#xa;                } }&#xd;&#xa;"/>
@@ -230,6 +231,9 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.JTextField" name="txtSalFimConsulta">
+      <Events>
+        <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtSalFimConsultaKeyPressed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JNumberFormatField(new DecimalFormat(&quot;R$ 0.00&quot;)) { &#xd;&#xa;                {// limita a 4 &#xd;&#xa;                    // caracteres &#xd;&#xa;                    setLimit(7); &#xd;&#xa;                } }&#xd;&#xa;"/>
         <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="CadastroView_jTextField4"/>
