@@ -6,7 +6,6 @@
 package teste;
 
 import br.com.lab4.src.jdbc.DataBase;
-import br.com.lab4.src.model.CadastroModel;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

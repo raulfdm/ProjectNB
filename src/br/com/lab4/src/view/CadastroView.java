@@ -9,7 +9,7 @@ import br.com.lab4.src.jdbc.DataBase;
 import java.text.DecimalFormat;
 import javax.swing.JFrame;
 import br.com.lab4.utils.JNumberFormatField;
-import br.com.lab4.src.model.CadastroModel;
+import teste.CadastroModel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -227,19 +227,13 @@ public class CadastroView extends javax.swing.JFrame {
 
         if (txtNomeCad.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Por favor, preencha o nome do funcionário!");
+        } else if (txtFuncCad.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha a função do funcionário!");
+        } else if (txtSalCad.getText().equals("R$ 0.00")) {
+            JOptionPane.showMessageDialog(null, "Por favor, preencha o salário do funcionário!");
+
         } else {
-            if (txtFuncCad.getText().equals("")) {
-                JOptionPane.showMessageDialog(null, "Por favor, preencha a função do funcionário!");
-            } else {
-                if (txtSalCad.getText().equals("R$ 0.00")) {
-                    JOptionPane.showMessageDialog(null, "Por favor, preencha o salário do funcionário!");
-
-                } else {
-                    cadastrarFuncionario();
-                }
-
-            }
-
+            cadastrarFuncionario();
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
@@ -362,8 +356,8 @@ public class CadastroView extends javax.swing.JFrame {
         String sql = "insert into colaborador (nomecompleto,funcao,datacadastro,salario) values "
                 + "(?,?,?,?)";
 
-        String nomeCompleto = txtNomeCad.getText();
-        String funcao = txtFuncCad.getText();
+        String nomeCompleto = txtNomeCad.getText().toUpperCase();
+        String funcao = txtFuncCad.getText().toUpperCase();
         String dataCadastro = dateToString(txtDatCad.getDate());
         double salario = formataSalario(txtSalCad.getText());
 

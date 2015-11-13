@@ -5,10 +5,10 @@
  */
 package br.com.lab4.src.view;
 
+import br.com.lab4.utils.CellRenderer;
 import br.com.lab4.src.jdbc.DataBase;
 import br.com.lab4.utils.JNumberFormatField;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,12 +21,16 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import br.com.lab4.utils.CellRenderer;
+import java.awt.event.KeyEvent;
 
 /**
  *
  * @author Raul
  */
 public class ConsultaView extends javax.swing.JFrame {
+
+    CadastroView view = new CadastroView();
 
     /**
      * Creates new form ConsultaModel
@@ -49,13 +53,14 @@ public class ConsultaView extends javax.swing.JFrame {
         btnGNomeCodigo = new javax.swing.ButtonGroup();
         scpTabela = new javax.swing.JScrollPane();
         tabPesquisa = new javax.swing.JTable();
+        tabPesquisa.setDefaultRenderer(Object.class, new CellRenderer());
         lblTituloTela = new javax.swing.JLabel();
         lblFuncaoConsulta = new javax.swing.JLabel();
         lblSalarioConsulta = new javax.swing.JLabel();
         rbtnFuncaoConsulta = new javax.swing.JRadioButton();
         rbtnSalario = new javax.swing.JRadioButton();
-        btnVoltar = new javax.swing.JButton();
         btnPesquisar = new javax.swing.JButton();
+        btnVoltar = new javax.swing.JButton();
         txtFuncaoConsulta = new javax.swing.JTextField();
         cbnOperadorLogico = new javax.swing.JComboBox();
         txtSalIniConsulta = new JNumberFormatField(new DecimalFormat("R$ 0.00")) { 
@@ -70,6 +75,7 @@ public class ConsultaView extends javax.swing.JFrame {
                     setLimit(7); 
                 } }
                 ;
+                jButton1 = new javax.swing.JButton();
 
                 setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,6 +100,7 @@ public class ConsultaView extends javax.swing.JFrame {
                 lblSalarioConsulta.setText("Salário:");
 
                 btnGNomeCodigo.add(rbtnFuncaoConsulta);
+                rbtnFuncaoConsulta.setMargin(new java.awt.Insets(4, 4, 4, 4));
                 rbtnFuncaoConsulta.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         rbtnFuncaoConsultaActionPerformed(evt);
@@ -101,9 +108,24 @@ public class ConsultaView extends javax.swing.JFrame {
                 });
 
                 btnGNomeCodigo.add(rbtnSalario);
+                rbtnSalario.setAlignmentX(2.0F);
+                rbtnSalario.setAlignmentY(1.0F);
+                rbtnSalario.setMargin(new java.awt.Insets(4, 4, 4, 2));
                 rbtnSalario.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         rbtnSalarioActionPerformed(evt);
+                    }
+                });
+
+                btnPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/lab4/img/search.png.png"))); // NOI18N
+                btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        btnPesquisarActionPerformed(evt);
+                    }
+                });
+                btnPesquisar.addKeyListener(new java.awt.event.KeyAdapter() {
+                    public void keyPressed(java.awt.event.KeyEvent evt) {
+                        btnPesquisarKeyPressed(evt);
                     }
                 });
 
@@ -114,18 +136,29 @@ public class ConsultaView extends javax.swing.JFrame {
                     }
                 });
 
-                btnPesquisar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/lab4/img/search.png.png"))); // NOI18N
-                btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
-                    public void actionPerformed(java.awt.event.ActionEvent evt) {
-                        btnPesquisarActionPerformed(evt);
+                txtFuncaoConsulta.addKeyListener(new java.awt.event.KeyAdapter() {
+                    public void keyPressed(java.awt.event.KeyEvent evt) {
+                        txtFuncaoConsultaKeyPressed(evt);
                     }
                 });
 
-                cbnOperadorLogico.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "<", "<=", "=", ">=", ">", "<>" }));
+                cbnOperadorLogico.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Menor que...", "Menor ou igual que...", "Igual à...", "Maior que...", "Maior ou igual que..", "Diferente de...", "Entre..." }));
+                cbnOperadorLogico.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        cbnOperadorLogicoActionPerformed(evt);
+                    }
+                });
 
                 txtSalIniConsulta.addActionListener(new java.awt.event.ActionListener() {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         txtSalIniConsultaActionPerformed(evt);
+                    }
+                });
+
+                jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/br/com/lab4/img/garbage.png"))); // NOI18N
+                jButton1.addActionListener(new java.awt.event.ActionListener() {
+                    public void actionPerformed(java.awt.event.ActionEvent evt) {
+                        jButton1ActionPerformed(evt);
                     }
                 });
 
@@ -134,68 +167,64 @@ public class ConsultaView extends javax.swing.JFrame {
                 layout.setHorizontalGroup(
                     layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
+                        .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(scpTabela)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(btnPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10)
+                                .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(0, 0, Short.MAX_VALUE)
-                                        .addComponent(btnPesquisar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(36, 36, 36)
-                                        .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(scpTabela, javax.swing.GroupLayout.DEFAULT_SIZE, 705, Short.MAX_VALUE))
-                                .addGap(4, 4, 4))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(218, 218, 218)
-                                        .addComponent(lblTituloTela))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(rbtnSalario)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(lblSalarioConsulta)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(txtSalIniConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(4, 4, 4)
-                                        .addComponent(cbnOperadorLogico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtSalFimConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(lblTituloTela)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(rbtnFuncaoConsulta)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(lblFuncaoConsulta)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(txtFuncaoConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .addComponent(txtFuncaoConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(rbtnSalario)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(lblSalarioConsulta)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(txtSalIniConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGap(14, 14, 14)
+                                .addComponent(cbnOperadorLogico, 0, 145, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtSalFimConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap())
                 );
                 layout.setVerticalGroup(
                     layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(15, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnVoltar)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(lblTituloTela)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(txtFuncaoConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(lblFuncaoConsulta))
-                                    .addComponent(rbtnFuncaoConsulta))
-                                .addGap(19, 19, 19)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(rbtnSalario, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(0, 0, Short.MAX_VALUE))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(lblSalarioConsulta)
+                                        .addComponent(txtSalIniConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(cbnOperadorLogico, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtSalIniConsulta)
-                                        .addComponent(txtSalFimConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(18, 18, 18)
-                                .addComponent(scpTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btnPesquisar)))
+                                        .addComponent(txtSalFimConsulta, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(rbtnSalario, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(rbtnFuncaoConsulta)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(scpTabela, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnVoltar)
+                            .addComponent(jButton1)
+                            .addComponent(btnPesquisar))
                         .addContainerGap())
                 );
 
@@ -204,18 +233,14 @@ public class ConsultaView extends javax.swing.JFrame {
 
     private void rbtnSalarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnSalarioActionPerformed
         if (rbtnSalario.isSelected() == true) {
-            txtFuncaoConsulta.setEditable(false);
-            txtFuncaoConsulta.setEnabled(false);
-            txtFuncaoConsulta.setText("");
+            desativaFuncao();
+            txtSalIniConsulta.requestFocus();
 
             if (cbnOperadorLogico.isEnabled() == false
                     || txtSalIniConsulta.isEnabled() == false || txtSalIniConsulta.isEditable() == false
                     || txtSalFimConsulta.isEnabled() == false || txtSalFimConsulta.isEditable() == false) {
-                txtSalIniConsulta.setEditable(true);
-                txtSalIniConsulta.setEnabled(true);
-                txtSalFimConsulta.setEditable(true);
-                txtSalFimConsulta.setEnabled(true);
-                cbnOperadorLogico.setEnabled(true);
+                ativaSalario();
+
             }
         }
     }//GEN-LAST:event_rbtnSalarioActionPerformed
@@ -232,17 +257,11 @@ public class ConsultaView extends javax.swing.JFrame {
 
     private void rbtnFuncaoConsultaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnFuncaoConsultaActionPerformed
         if (rbtnFuncaoConsulta.isSelected() == true) {
-            txtSalIniConsulta.setEditable(false);
-            txtSalIniConsulta.setEnabled(false);
-            txtSalFimConsulta.setEditable(false);
-            txtSalFimConsulta.setEnabled(false);
-            cbnOperadorLogico.setEnabled(false);
-            txtSalFimConsulta.setText("");
-            txtSalFimConsulta.setText("");
+            desativaSalario();
+            txtFuncaoConsulta.requestFocus();
 
             if (txtFuncaoConsulta.isEnabled() == false || txtFuncaoConsulta.isEditable() == false) {
-                txtFuncaoConsulta.setEditable(true);
-                txtFuncaoConsulta.setEnabled(true);
+                ativaFuncao();
             }
         }
     }//GEN-LAST:event_rbtnFuncaoConsultaActionPerformed
@@ -254,6 +273,34 @@ public class ConsultaView extends javax.swing.JFrame {
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         pesquisarFuncionario();
     }//GEN-LAST:event_btnPesquisarActionPerformed
+
+    private void btnPesquisarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnPesquisarKeyPressed
+
+    }//GEN-LAST:event_btnPesquisarKeyPressed
+
+    private void txtFuncaoConsultaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFuncaoConsultaKeyPressed
+        int key = evt.getKeyCode();
+        if (key == KeyEvent.VK_ENTER) {
+            pesquisarFuncionario();
+        }
+    }//GEN-LAST:event_txtFuncaoConsultaKeyPressed
+
+    private void cbnOperadorLogicoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbnOperadorLogicoActionPerformed
+        int opcao = cbnOperadorLogico.getSelectedIndex();
+
+        if (opcao == 6) {
+            txtSalFimConsulta.setEnabled(true);
+            txtSalFimConsulta.setEditable(true);
+        } else {
+            txtSalFimConsulta.setEnabled(false);
+            txtSalFimConsulta.setEditable(false);
+            txtSalFimConsulta.setText("R$ 0,00");
+        }
+    }//GEN-LAST:event_cbnOperadorLogicoActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -296,6 +343,7 @@ public class ConsultaView extends javax.swing.JFrame {
     private javax.swing.JButton btnPesquisar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox cbnOperadorLogico;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblFuncaoConsulta;
     private javax.swing.JLabel lblSalarioConsulta;
     private javax.swing.JLabel lblTituloTela;
@@ -316,6 +364,9 @@ public class ConsultaView extends javax.swing.JFrame {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //Centraliza Tela
         this.setLocationRelativeTo(null);
+        rbtnFuncaoConsulta.setSelected(true);
+        txtFuncaoConsulta.requestFocus();
+        desativaSalario();
     }
 
     private void confTabela() {
@@ -333,10 +384,10 @@ public class ConsultaView extends javax.swing.JFrame {
         m.addColumn("Salário");
 
         tabPesquisa.setModel(m);
-        tabPesquisa.getColumnModel().getColumn(0).setMaxWidth(100);//Código do Funcionário
-        tabPesquisa.getColumnModel().getColumn(1).setMaxWidth(500);//nome do funcionário
-        tabPesquisa.getColumnModel().getColumn(2).setMaxWidth(200);//cargo
-        tabPesquisa.getColumnModel().getColumn(3).setMaxWidth(300);//Data de Contratação
+        tabPesquisa.getColumnModel().getColumn(0).setMaxWidth(60);//Código do Funcionário
+        tabPesquisa.getColumnModel().getColumn(1).setMaxWidth(400);//nome do funcionário
+        tabPesquisa.getColumnModel().getColumn(2).setMaxWidth(400);//cargo
+        tabPesquisa.getColumnModel().getColumn(3).setMaxWidth(200);//Data de Contratação
         tabPesquisa.getColumnModel().getColumn(4).setMaxWidth(100);//Salário
 
         //Centralizar nome da coluna
@@ -345,20 +396,59 @@ public class ConsultaView extends javax.swing.JFrame {
 
     private void pesquisarFuncionario() {
         DefaultTableModel m = (DefaultTableModel) tabPesquisa.getModel();
+
+        int linha = m.getRowCount();
+        if (linha > 0) {
+            for (int i = 0; i < linha; i++) {
+                m.removeRow(0);
+            }
+        }
+
         Connection con;
-        PreparedStatement st;
+        Statement st;
 
-        String sql = "select * from colaborador where funcao like %?%";
-        String funcao = txtFuncaoConsulta.getText();
+        String funcao = txtFuncaoConsulta.getText().toUpperCase();
+        double salarioInicial = view.formataSalario(txtSalIniConsulta.getText());
+        double salarioFinal = view.formataSalario(txtSalFimConsulta.getText());
 
-        
+        String sql = null;
+        if (rbtnFuncaoConsulta.isSelected()) {
+            sql = "select * from colaborador where funcao like '%" + funcao + "%'";
+        } else if (rbtnSalario.isSelected()) {
+            int operadorLogico = cbnOperadorLogico.getSelectedIndex();
+            switch (operadorLogico) {
+                case 0:
+                    sql = "select * from colaborador where salario < " + salarioInicial;
+                    break;
+                case 1:
+                    sql = "select * from colaborador where salario <= " + salarioInicial;
+                    break;
+                case 2:
+                    sql = "select * from colaborador where salario = " + salarioInicial;
+                    break;
+                case 3:
+                    sql = "select * from colaborador where salario > " + salarioInicial;
+                    break;
+                case 4:
+                    sql = "select * from colaborador where salario >= " + salarioInicial;
+                    break;
+                case 5:
+                    sql = "select * from colaborador where salario <> " + salarioInicial;
+                    break;
+                case 6:
+                    sql = "select * from colaborador where salario between " + salarioInicial
+                            + "and " + salarioFinal;
+                    break;
+            }
+
+        }
+
         try {
             con = DataBase.getConnection();
-            st = con.prepareStatement(sql);
-            st.setString(1, funcao);
+            st = con.createStatement();
+            st.execute(sql);
 
-            // boolean resultado = st.execute();
-            ResultSet rt = st.executeQuery();
+            ResultSet rt = st.getResultSet();
 
             while (rt.next()) {
                 int codigo = rt.getInt("codigofuncionario");
@@ -376,6 +466,38 @@ public class ConsultaView extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(CadastroView.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void desativaSalario() {
+        txtSalIniConsulta.setEditable(false);
+        txtSalIniConsulta.setEnabled(false);
+        txtSalFimConsulta.setEditable(false);
+        txtSalFimConsulta.setEnabled(false);
+        cbnOperadorLogico.setEnabled(false);
+        txtSalFimConsulta.setText("");
+        txtSalFimConsulta.setText("");
+    }
+
+    private void desativaFuncao() {
+        txtFuncaoConsulta.setEditable(false);
+        txtFuncaoConsulta.setEnabled(false);
+        txtFuncaoConsulta.setText("");
+    }
+
+    private void ativaSalario() {
+        txtSalIniConsulta.setEditable(true);
+        txtSalIniConsulta.setEnabled(true);
+        if (cbnOperadorLogico.getSelectedIndex() != 6) {
+            txtSalFimConsulta.setEnabled(false);
+            txtSalFimConsulta.setEditable(false);
+            txtSalFimConsulta.setText("R$ 0,00");
+        }
+        cbnOperadorLogico.setEnabled(true);
+    }
+
+    private void ativaFuncao() {
+        txtFuncaoConsulta.setEditable(true);
+        txtFuncaoConsulta.setEnabled(true);
     }
 
 }
