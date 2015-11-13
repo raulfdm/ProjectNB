@@ -307,9 +307,7 @@ public class CadastroView extends javax.swing.JFrame {
     private javax.swing.JTextField txtNomeCad;
     private javax.swing.JTextField txtSalCad;
     // End of variables declaration//GEN-END:variables
-    private void confTelaCadastro() {
-        //Nome na barra superior da janela
-        this.setTitle("Cadastro de Funcionário");
+    private void confTelaCadastro() {        
         //Impossível Redimensionar 
         this.setResizable(false);
         //Fechar toda a Aplicação ao clicar no botão Fechar
